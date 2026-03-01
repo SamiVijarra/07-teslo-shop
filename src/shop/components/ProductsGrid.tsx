@@ -3,26 +3,21 @@ import type { Product } from "@/mocks/products.mock";
 import { Filter, Grid, List } from "lucide-react";
 import { ProductCard } from "./ProductCard";
 import { FilterSidebar } from "./FilterSidebar";
-import { useSearchParams } from "react-router";
+
 import { useState } from "react";
+import { useProductsQuery } from "@/hooks/useProductsQuery";
 
 interface Props {
     products: Product[];
 }
 
 export const ProductGrid = ({products}: Props) => {
+    const {viewMode, handleViewModeChange} = useProductsQuery ();
 
-    const [ searchParams, setSearchParams] = useSearchParams();
 
     const [showFilters, setShowFilters] = useState(false);
 
-    const viewMode = searchParams.get('viewMode') || 'grid';
-
-    const handleViewModeChange = ( mode: 'grid' | 'list') => {
-        searchParams.set('viewMode', mode);
-        setSearchParams(searchParams);
-    };
-
+    
     return (
             <section className="py-12 px-4 lg:px-8">
             <div className="container mx-auto">
