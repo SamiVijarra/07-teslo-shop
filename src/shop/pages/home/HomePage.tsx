@@ -1,15 +1,17 @@
 
 import { CustomPagination } from "@/components/custom/CustomPagination"
-import { products } from "@/mocks/products.mock"
+import { useProducts } from "@/hooks/useProducts"
 import { CustomJumbotron } from "@/shop/components/CustomJumbotron"
 import { ProductGrid } from "@/shop/components/ProductsGrid"
 
-export const HomePage = () => {    
+export const HomePage = () => {  
+    
+    const { data } = useProducts();
     return (
         <div>
             <CustomJumbotron title="Todos los productos"/>
-            <ProductGrid products={products}/>
-            <CustomPagination totalPages={7}/>
+            <ProductGrid products={data?.products || []}/>
+            <CustomPagination totalPages={data?.pages || 0}/>
         </div>
     )
 }
