@@ -3,21 +3,21 @@ import { create } from 'zustand'
 import { loginAction } from '../actions/login.action';
 import { checkAuthAction } from '../actions/check-auth.action';
 
-type AuthState = 'authenticated' | 'not-authenticated' | 'checking';
+type AuthStatus = 'authenticated' | 'not-authenticated' | 'checking';
 
-type AuthStore = {
+type AuthState = {
     user: User | null,
     token: string | null,
-    authStatus: AuthState,
+    authStatus: AuthStatus,
 
     isAdmin: () => boolean,
 
     login: (email: string, password: string) => Promise<boolean>,
     logout: () => void,
-    checkAuthState: () => Promise<boolean>,
+    checkAuthStatus: () => Promise<boolean>,
 }
 
-export const useAuthStore = create<AuthStore>()((set, get) => ({
+export const useAuthStore = create<AuthState>()((set, get) => ({
     user: null,
     token: null,
     authStatus: 'checking',
@@ -36,7 +36,7 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
             localStorage.setItem('token', data.token);
             set({ user: data.user, token: data.token, authStatus: 'authenticated' });
             return true;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             localStorage.removeItem('token');
             set({ user: null, token: null, authStatus: 'not-authenticated' });
@@ -47,16 +47,16 @@ export const useAuthStore = create<AuthStore>()((set, get) => ({
         localStorage.removeItem('token');
         set({ user: null, token: null, authStatus: 'not-authenticated' });
     },
-    checkAuthState: async () => {
+    checkAuthStatus: async () => {
         try {
             const { user, token } = await checkAuthAction();
             set({
-                user: user, 
+                user: user,
                 token: token,
                 authStatus: 'authenticated'
-            }); 
+            });
             return true;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             localStorage.removeItem('token');
             set({
