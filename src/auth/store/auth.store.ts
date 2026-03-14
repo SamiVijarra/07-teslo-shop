@@ -70,8 +70,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         set({
-        user: undefined,
-        token: undefined,
+        user: null,
+        token: null,
         authStatus: 'not-authenticated',
         });
         return false;

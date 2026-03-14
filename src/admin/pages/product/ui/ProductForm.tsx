@@ -38,12 +38,12 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
     });
 
     const labelInputRef = useRef<HTMLInputElement>(null);
+    
+    const [files, setFiles] = useState<File[]>([]);
 
     // eslint-disable-next-line react-hooks/incompatible-library
     const selectedSizes = watch('sizes');
-
     const selectedTags = watch('tags');
-
     const currentStock = watch('stock');
 
 
@@ -89,12 +89,16 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
         e.stopPropagation();
         setDragActive(false);
         const files = e.dataTransfer.files;
-        console.log(files);
+        
+        if (!files) return;
+
+        setFiles((prev) => [...prev, ...Array.from(files)]);
     };
     
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        console.log(files);
+        if (!files) return;
+        setFiles((prev) => [...prev, ...Array.from(files)]);
     };
 
     return (
@@ -102,9 +106,7 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
             <div className="flex justify-between items-center">
                 <AdminTitle title={title} subtitle={subtitle} />
                 <div className="flex justify-end mb-10 gap-4">
-                    <Button variant="outline"
-                    type= "button"
-                    >
+                    <Button variant="outline" type= "button" >
                         <Link to="/admin/products" className="flex items-center gap-2">
                             <X className="w-4 h-4" />
                             Cancelar
@@ -120,7 +122,7 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Main Form */}
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="lg:col-span-2 space-y-6">
                         {/* Basic Information */}
                         <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
                             <h2 className="text-xl font-semibold text-slate-800 mb-6">
@@ -145,8 +147,7 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
                                     {
                                         errors.title && (
                                             <p className="text-red-500 text-sm">Title is required.</p>
-                                        )
-                                    }
+                                        )}
                                 </div>
     
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -196,7 +197,6 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
                                         }
                                     </div>
                                 </div>
-                            </div>
     
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-2">
@@ -222,14 +222,14 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
                                         </p>
                                     )}
                             </div>
-                        </div>
+                        
     
                         <div>
                             <label className="block text-sm font-medium text-slate-700 mb-2">
                                 Género del producto
                             </label>
                             <select
-                                value={product.gender}
+                                //value={product.gender}
                                 //                        onChange={(e) =>
                                 //                            handleInputChange('gender', e.target.value)
                                 //                        }
@@ -431,7 +431,27 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
                             ))}
                         </div>
                     </div>
-                </div>
+                    {/* imagenes por cargar */}
+                    <div className={
+                        cn("mt-6 space-y-3", {
+                            'hidden': files.length === 0,
+                        })
+                    }>
+                        <h3 className="text-sm font-medium text-slate-700">
+                            Imágenes por cargar
+                        </h3>
+                        <div className="grid grid-cols-2 gap-3">
+                            {files.map((file, index) => (
+                                <img
+                                src={URL.createObjectURL(file)}
+                                    alt="Product"
+                                    key={index}
+                                className="w-full h-full object-cover rounded-lg"
+                            />
+                            ))}
+                            </div>
+                        </div>
+                    </div>
     
                 {/* Product Status */}
                 <div className="bg-white rounded-xl shadow-lg border border-slate-200 p-6">
@@ -487,16 +507,11 @@ export const ProductForm = ({ title, subtitle, product, onSubmit, isPending }: P
                             </span>
                         </div>
                     </div>
-
                 </div>
-
             </div>
-
-        
-
-                
-        </form >
-    )
+        </div>
+    </div>
+</form >)
 }
 
 

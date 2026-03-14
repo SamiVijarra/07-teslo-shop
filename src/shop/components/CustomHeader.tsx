@@ -13,7 +13,7 @@ export const CustomHeader = () => {
 
     const { handleSearch, inputRef, query } = useProductsQuery(); 
     
-    const {authState, isAdmin, logout} = useAuthStore();
+    const {authStatus, isAdmin, logout} = useAuthStore();
 
     const {gender } = useParams();
 
@@ -78,7 +78,7 @@ export const CustomHeader = () => {
             
                     
             {
-            authState === 'not-authenticated'  ? (
+            authStatus === 'not-authenticated'  ? (
                 <Link to= "/auth/login">
                 <Button variant="default" size= "sm" className="ml-2">
                     Login
